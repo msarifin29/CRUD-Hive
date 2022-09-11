@@ -1,13 +1,14 @@
 // ignore_for_file: unused_field, must_be_immutable, avoid_print, use_build_context_synchronously
 
-import 'package:copy/helper.dart';
+import 'package:copy/helpers/helper.dart';
 import 'package:copy/screen/home.dart';
 import 'package:flutter/material.dart';
-
 import '../model/todo_model.dart';
 
 class Formulir extends StatefulWidget {
   Formulir({Key? key, this.todos, this.index}) : super(key: key);
+
+  static const roteName = 'formulir';
 
   Todo? todos;
   int? index;
@@ -39,7 +40,7 @@ class _FormulirState extends State<Formulir> {
         await Helper.box.putAt(widget.index!, newTodo);
         print('newTodo is update to box');
       } else {
-        // add a new todo
+        // add a new todos
         await Helper.box.add(newTodo);
         print('newTodo is added to box');
       }
@@ -49,17 +50,11 @@ class _FormulirState extends State<Formulir> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          content: const Text('Are you sure!'),
-          actions: [ TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('no'),
-            ),
+          content: const Text('Create notes!'),
+          actions: [
             TextButton(
-              onPressed: () => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const Home()),
-                  (route) => false),
-              child: const Text('yes'),
+              onPressed:() => Navigator.pop(context),
+              child: const Text('ok'),
             ),
           ],
         ),
@@ -83,6 +78,29 @@ class _FormulirState extends State<Formulir> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          Container(
+            width: 100,
+            padding: const EdgeInsets.all(5),
+            child: RawMaterialButton(
+              onPressed: saveTodos,
+              fillColor: Colors.blueAccent.shade400,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: const Text(
+                'Save',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       body: ListView(
         children: [
           const Padding(
@@ -101,11 +119,6 @@ class _FormulirState extends State<Formulir> {
               textInputAction: TextInputAction.done,
               controller: _titleC,
               decoration: InputDecoration(
-                hintText: 'Enter title',
-                hintStyle: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
                 fillColor: Colors.blue.shade100.withAlpha(75),
                 filled: true,
                 border: OutlineInputBorder(
@@ -139,42 +152,12 @@ class _FormulirState extends State<Formulir> {
               maxLines: 30,
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
-                hintText: 'Write some words',
-                hintStyle: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
                 fillColor: Colors.blue.shade100.withAlpha(75),
                 filled: true,
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none,
                   borderRadius: BorderRadius.circular(
                     8.0,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Align(
-              alignment: FractionalOffset.centerRight,
-              child: Container(
-                height: 60,
-                width: 150,
-                padding: const EdgeInsets.only(right: 20.0),
-                child: RawMaterialButton(
-                  onPressed: saveTodos,
-                  fillColor: Colors.blueAccent.shade400,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child:const Text(
-                    'Save',
-                    style:TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
                   ),
                 ),
               ),
