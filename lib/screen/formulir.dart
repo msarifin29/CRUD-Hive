@@ -53,7 +53,7 @@ class _FormulirState extends State<Formulir> {
           content: const Text('Create notes!'),
           actions: [
             TextButton(
-              onPressed:() => Navigator.pop(context),
+              onPressed: () => Navigator.pop(context),
               child: const Text('ok'),
             ),
           ],
@@ -78,24 +78,25 @@ class _FormulirState extends State<Formulir> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         actions: [
           Container(
             width: 100,
             padding: const EdgeInsets.all(5),
             child: RawMaterialButton(
               onPressed: saveTodos,
-              fillColor: Colors.blueAccent.shade400,
+              fillColor: Theme.of(context).splashColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: const Text(
+              child: Text(
                 'Save',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: Colors.white),
               ),
             ),
           ),
@@ -103,14 +104,11 @@ class _FormulirState extends State<Formulir> {
       ),
       body: ListView(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Text(
               'Title',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           Padding(
@@ -133,14 +131,11 @@ class _FormulirState extends State<Formulir> {
           const SizedBox(
             height: 12.0,
           ),
-          const Padding(
-            padding: EdgeInsets.all(16.0),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Text(
               'Description',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           Padding(

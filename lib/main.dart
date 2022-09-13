@@ -36,14 +36,77 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
+  // Using "static" so that we can easily access it later
+  static final ValueNotifier<ThemeMode> themeNotifier =
+      ValueNotifier(ThemeMode.light);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.blueAccent,
-      ),home: const Home(),
-    );
+    return ValueListenableBuilder(
+        valueListenable: themeNotifier,
+        builder: (context, ThemeMode currentTheme, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            themeMode: currentTheme,
+            theme: ThemeData(
+              primaryColor: Colors.lightBlue,
+              splashColor: Colors.blueAccent,
+              cardColor: Colors.grey.shade300,
+              backgroundColor: Colors.white,
+              textTheme: const TextTheme(
+                titleLarge: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                titleMedium: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(92, 0, 0, 0),
+                ),
+                titleSmall: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                bodyMedium: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            darkTheme: ThemeData(
+              primaryColor: Colors.grey.shade900,
+              splashColor: Colors.grey.shade600,
+              cardColor: Colors.white38,
+              backgroundColor: Colors.black,
+              textTheme: const TextTheme(
+                titleLarge: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                titleMedium: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                titleSmall: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                bodyMedium: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            home: const Home(),
+          );
+        });
   }
 }
