@@ -28,10 +28,10 @@ class _HomeState extends State<Home> {
     });
   }
 
-  themes() {
-    isDarkMode = HiveService.instance.getThemeMode().get('darkMode');
+  themes() async {
+    isDarkMode = HiveService.instance.isDarkTheme(false);
     if (isDarkMode) {
-      HiveService.instance.currentTheme(false);
+      await HiveService.instance.currentTheme(false);
     } else {
       HiveService.instance.currentTheme(true);
     }
