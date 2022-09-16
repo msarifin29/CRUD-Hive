@@ -1,8 +1,7 @@
 // ignore_for_file: avoid_print
 
-import 'package:copy/helpers/helper.dart';
-import 'package:copy/main.dart';
 import 'package:copy/screen/formulir.dart';
+import 'package:copy/service/hive_db.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -18,12 +17,24 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool isDarkMode = false;
   List<Todo> todos = [];
 
   void getTodoList() {
+    var todoList = HiveService().getDB();
     setState(() {
-      todos = Helper.box.values.toList();
+      // todos = Helper.box.values.toList();
+      todos = todoList.values.toList();
     });
+  }
+
+  themes() {
+    isDarkMode = HiveService.instance.getThemeMode().get('darkMode');
+    if (isDarkMode) {
+      HiveService.instance.currentTheme(false);
+    } else {
+      HiveService.instance.currentTheme(true);
+    }
   }
 
   @override
@@ -40,25 +51,31 @@ class _HomeState extends State<Home> {
         automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(
-          'CRUD Hive',
+          'Todo List',
           style: Theme.of(context).textTheme.titleLarge,
         ),
         centerTitle: true,
         actions: [
           IconButton(
-              icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
-                  ? Icons.dark_mode
-                  : Icons.light_mode),
-              onPressed: () {
-                MyApp.themeNotifier.value =
-                    MyApp.themeNotifier.value == ThemeMode.light
-                        ? ThemeMode.dark
-                        : ThemeMode.light;
-              })
+            onPressed: themes,
+            icon: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Icon(
+                isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                color: isDarkMode ? Colors.black : Colors.white,
+              ),
+            ),
+          ),
+          // Switch(
+          //   value: HiveService.instance.isDarkTheme(false),
+          //   onChanged: (val) {
+          //     HiveService.instance.currentTheme(val);
+          //   },
+          // ),
         ],
       ),
-      body: ValueListenableBuilder<Box<Todo>>(
-        valueListenable: Helper.box.listenable(),
+      body: ValueListenableBuilder<Box>(
+        valueListenable: HiveService.instance.getDB().listenable(),
         builder: (context, box, _) {
           if (box.isEmpty) {
             return Center(
@@ -100,7 +117,8 @@ class CustomListTile extends StatefulWidget {
 class _CustomListTileState extends State<CustomListTile> {
   // delete todos
   void deleteTodos(int index) {
-    Helper.box.deleteAt(index);
+    // Helper.box.deleteAt(index);
+    HiveService.instance.deleteBox(index);
     setState(() {
       widget.todos.removeAt(index);
       print('todos is deleted from box');
@@ -135,7 +153,7 @@ class _CustomListTileState extends State<CustomListTile> {
                   backgroundColor: Colors.grey[400],
                   child: Text(
                     widget.todos[i].title![0],
-                    style: const TextStyle(color: Colors.white),
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
                 title: Text(

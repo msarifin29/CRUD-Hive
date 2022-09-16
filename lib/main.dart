@@ -2,8 +2,8 @@
 
 import 'dart:async';
 
-import 'package:copy/model/todo_model.dart';
 import 'package:copy/screen/home.dart';
+import 'package:copy/service/hive_db.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -12,9 +12,11 @@ import 'helpers/is_debug.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initializing the hive
-  await Hive.initFlutter();
-  Hive.registerAdapter<Todo>(TodoAdapter());
-  await Hive.openBox<Todo>('todo');
+  // await Hive.initFlutter();
+  // Hive.registerAdapter<Todo>(TodoAdapter());
+  // await Hive.openBox<Todo>('todo');
+
+  await HiveService.instance.init();
   runApp(
     const MyApp(),
   );
@@ -36,17 +38,17 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-  // Using "static" so that we can easily access it later
-  static final ValueNotifier<ThemeMode> themeNotifier =
-      ValueNotifier(ThemeMode.light);
+
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-        valueListenable: themeNotifier,
-        builder: (context, ThemeMode currentTheme, _) {
+    return ValueListenableBuilder<Box>(
+        valueListenable: HiveService.instance.getThemeMode().listenable(),
+        builder: (context, box, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: currentTheme,
+            themeMode: HiveService.instance.isDarkTheme(false)
+                ? ThemeMode.dark
+                : ThemeMode.light,
             theme: ThemeData(
               primaryColor: Colors.lightBlue,
               splashColor: Colors.blueAccent,
@@ -66,7 +68,7 @@ class MyApp extends StatelessWidget {
                 titleSmall: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.blueAccent,
                 ),
                 bodyMedium: TextStyle(
                   fontSize: 16,
@@ -81,13 +83,13 @@ class MyApp extends StatelessWidget {
               splashColor: Colors.grey.shade600,
               cardColor: Colors.white38,
               backgroundColor: Colors.black,
-              textTheme: const TextTheme(
-                titleLarge: TextStyle(
+              textTheme: TextTheme(
+                titleLarge: const TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
-                titleMedium: TextStyle(
+                titleMedium: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -95,13 +97,13 @@ class MyApp extends StatelessWidget {
                 titleSmall: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.grey.shade100,
                 ),
                 bodyMedium: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
-                  color: Colors.grey,
+                  color: Colors.grey.shade100,
                 ),
               ),
             ),

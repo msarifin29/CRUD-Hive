@@ -1,7 +1,7 @@
 // ignore_for_file: unused_field, must_be_immutable, avoid_print, use_build_context_synchronously
 
-import 'package:copy/helpers/helper.dart';
 import 'package:copy/screen/home.dart';
+import 'package:copy/service/hive_db.dart';
 import 'package:flutter/material.dart';
 import '../model/todo_model.dart';
 
@@ -37,11 +37,14 @@ class _FormulirState extends State<Formulir> {
       var newTodo = Todo(title: _titleC.text, description: _descriptionC.text);
       // update todos
       if (widget.index != null) {
-        await Helper.box.putAt(widget.index!, newTodo);
+        // await Helper.box.putAt(widget.index!, newTodo);
+
+        await HiveService.instance.updateBox(widget.index!, newTodo);
         print('newTodo is update to box');
       } else {
         // add a new todos
-        await Helper.box.add(newTodo);
+        // await Helper.box.add(newTodo);
+        await HiveService.instance.addBox(newTodo);
         print('newTodo is added to box');
       }
       Navigator.pushAndRemoveUntil(context,
